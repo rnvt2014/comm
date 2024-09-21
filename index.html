@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator_touch3</title>
+    <title>Job Price Calculator_back2</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -59,6 +59,7 @@
             background: linear-gradient(90deg, #BB86FC, #6200EE);
             outline: none;
             opacity: 0.8;
+            transition: opacity 0.2s ease-in-out;
             margin-top: 10px; /* Space above the slider */
         }
 
@@ -75,7 +76,7 @@
             border: 2px solid #BB86FC;
             cursor: pointer;
             border-radius: 50%;
-            transition: background-color 0.2s ease-in-out;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
         }
 
         .slider-container input[type="number"] {
@@ -102,6 +103,21 @@
             width: 100%;
             overflow-wrap: break-word;
         }
+
+        .slider-container input[type="number"] {
+            width: 100px;
+            padding: 8px;
+            margin-left: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #1E1E1E;
+            color: #E0E0E0;
+            font-size: 16px; /* Set minimum font size */
+        }
+
+        .slider-container input[type="range"] {
+            touch-action: manipulation; /* Prevents zoom on touch */
+        }
     </style>
 </head>
 <body>
@@ -124,6 +140,30 @@
             <input type="range" id="cost" min="0" max="100000" value="0" step="100" oninput="syncInput('cost')">
         </div>
 
+        <div class="slider-container">
+            <div class="input-wrapper">
+                <label for="dealer-fee">Dealer Fee (%): <span id="dealer-fee-value">0</span></label>
+                <input type="number" id="dealer-fee-input" min="0" max="15" value="0" step="0.25" oninput="syncSlider('dealer-fee')">
+            </div>
+            <input type="range" id="dealer-fee" min="0" max="15" value="0" step="0.25" oninput="syncInput('dealer-fee')">
+        </div>
+
+        <div class="slider-container">
+            <div class="input-wrapper">
+                <label for="rep-percentage">Rep Percentage (%): <span id="rep-percentage-value">100</span></label>
+                <input type="number" id="rep-percentage-input" min="0" max="100" value="100" oninput="syncSlider('rep-percentage')">
+            </div>
+            <input type="range" id="rep-percentage" min="0" max="100" value="100" oninput="syncInput('rep-percentage')">
+        </div>
+
+        <div class="slider-container">
+            <div class="input-wrapper">
+                <label for="lead-cost">Lead Cost (%): <span id="lead-cost-value">15</span></label>
+                <input type="number" id="lead-cost-input" min="0" max="20" value="15" step="1" oninput="syncSlider('lead-cost')">
+            </div>
+            <input type="range" id="lead-cost" min="0" max="20" value="15" step="1" oninput="syncInput('lead-cost')">
+        </div>
+
         <div class="output">
             Final Commission Calculation: <span id="result">0</span>
         </div>
@@ -133,10 +173,18 @@
         function calculate() {
             const price = parseFloat(document.getElementById('price').value);
             const cost = parseFloat(document.getElementById('cost').value);
-            const result = (price - cost) / 2; // Simple calculation
-            document.getElementById('result').textContent = result.toFixed(2);
+            const dealerFee = parseFloat(document.getElementById('dealer-fee').value) / 100;
+            const repPercentage = parseFloat(document.getElementById('rep-percentage').value) / 100;
+            const leadCost = parseFloat(document.getElementById('lead-cost').value) / 100;
+
             document.getElementById('price-value').textContent = price;
             document.getElementById('cost-value').textContent = cost;
+            document.getElementById('dealer-fee-value').textContent = (dealerFee * 100).toFixed(2);
+            document.getElementById('rep-percentage-value').textContent = (repPercentage * 100).toFixed(0);
+            document.getElementById('lead-cost-value').textContent = (leadCost * 100).toFixed(0);
+
+            const result = (((((price * (1 - dealerFee)) * (1 - leadCost))) - cost) * repPercentage) / 2;
+            document.getElementById('result').textContent = result.toFixed(2);
         }
 
         function syncInput(id) {
