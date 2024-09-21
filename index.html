@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator__.tofix(2)</title>
+    <title>Job Price Calculator__fixed</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #121212;
             color: #E0E0E0;
-            margin: 0; /* Remove default margins */
-            display: flex; /* Use flexbox to center the container */
-            justify-content: center; /* Horizontally center the container */
-            align-items: center; /* Vertically center the container */
-            min-height: 100vh; /* Make the body take full height of the viewport */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 800px; /* Set maximum width of the container */
-            width: 100%; /* Allow the container to take full width up to max-width */
-            margin: 20px; /* Add some margin around the container */
-            padding: 20px; /* Add padding inside the container */
+            max-width: 800px;
+            width: 100%;
+            margin: 20px;
+            padding: 20px;
             background-color: #1E1E1E;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -38,10 +38,16 @@
         }
 
         .slider-container label {
-            display: block;
+            display: inline-block;
             margin-bottom: 10px;
             font-size: 1.1em;
             color: #BB86FC;
+            width: 200px; /* Fixed width for the label */
+        }
+
+        .slider-container .input-wrapper {
+            display: flex;
+            align-items: center;
         }
 
         .slider-container input[type="range"] {
@@ -53,6 +59,7 @@
             outline: none;
             opacity: 0.8;
             transition: opacity 0.2s ease-in-out;
+            margin-top: 10px; /* Space above the slider */
         }
 
         .slider-container input[type="range"]:hover {
@@ -62,20 +69,6 @@
         .slider-container input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #03DAC6;
-            border: 2px solid #BB86FC;
-            cursor: pointer;
-            border-radius: 50%;
-            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-        }
-
-        .slider-container input[type="range"]:hover::-webkit-slider-thumb {
-            transform: scale(1.1);
-        }
-
-        .slider-container input[type="range"]::-moz-range-thumb {
             width: 20px;
             height: 20px;
             background: #03DAC6;
@@ -106,8 +99,8 @@
             font-weight: bold;
             color: #03DAC6;
             text-align: center;
-            width: 100%; /* Ensure the output div takes full width */
-            overflow-wrap: break-word; /* Handle very long numbers gracefully */
+            width: 100%;
+            overflow-wrap: break-word;
         }
     </style>
 </head>
@@ -116,33 +109,43 @@
         <h1>Job Price Calculator</h1>
 
         <div class="slider-container">
-            <label for="price">Price ($): <span id="price-value">5000</span></label>
-            <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')" onchange="calculate()">
-            <input type="number" id="price-input" min="5000" max="170000" value="5000" step="100" oninput="syncSlider('price')">
+            <div class="input-wrapper">
+                <label for="price">Price ($): <span id="price-value">5000</span></label>
+                <input type="number" id="price-input" min="5000" max="170000" value="5000" step="100" oninput="syncSlider('price')">
+            </div>
+            <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')">
         </div>
 
         <div class="slider-container">
-            <label for="cost">Cost ($): <span id="cost-value">0</span></label>
-            <input type="range" id="cost" min="0" max="100000" value="0" step="100" oninput="syncInput('cost')" onchange="calculate()">
-            <input type="number" id="cost-input" min="0" max="100000" value="0" step="100" oninput="syncSlider('cost')">
+            <div class="input-wrapper">
+                <label for="cost">Cost ($): <span id="cost-value">0</span></label>
+                <input type="number" id="cost-input" min="0" max="100000" value="0" step="100" oninput="syncSlider('cost')">
+            </div>
+            <input type="range" id="cost" min="0" max="100000" value="0" step="100" oninput="syncInput('cost')">
         </div>
 
         <div class="slider-container">
-            <label for="dealer-fee">Dealer Fee (%): <span id="dealer-fee-value">0</span></label>
-            <input type="range" id="dealer-fee" min="0" max="15" value="0" step="0.25" oninput="syncInput('dealer-fee')" onchange="calculate()">
-            <input type="number" id="dealer-fee-input" min="0" max="15" value="0" step="0.25" oninput="syncSlider('dealer-fee')">
+            <div class="input-wrapper">
+                <label for="dealer-fee">Dealer Fee (%): <span id="dealer-fee-value">0</span></label>
+                <input type="number" id="dealer-fee-input" min="0" max="15" value="0" step="0.25" oninput="syncSlider('dealer-fee')">
+            </div>
+            <input type="range" id="dealer-fee" min="0" max="15" value="0" step="0.25" oninput="syncInput('dealer-fee')">
         </div>
 
         <div class="slider-container">
-            <label for="rep-percentage">Rep Percentage (%): <span id="rep-percentage-value">100</span></label>
-            <input type="range" id="rep-percentage" min="0" max="100" value="100" oninput="syncInput('rep-percentage')" onchange="calculate()">
-            <input type="number" id="rep-percentage-input" min="0" max="100" value="100" oninput="syncSlider('rep-percentage')">
+            <div class="input-wrapper">
+                <label for="rep-percentage">Rep Percentage (%): <span id="rep-percentage-value">100</span></label>
+                <input type="number" id="rep-percentage-input" min="0" max="100" value="100" oninput="syncSlider('rep-percentage')">
+            </div>
+            <input type="range" id="rep-percentage" min="0" max="100" value="100" oninput="syncInput('rep-percentage')">
         </div>
 
         <div class="slider-container">
-            <label for="lead-cost">Lead Cost (%): <span id="lead-cost-value">15</span></label>
-            <input type="range" id="lead-cost" min="0" max="20" value="15" step="0.5" oninput="syncInput('lead-cost')" onchange="calculate()">
-            <input type="number" id="lead-cost-input" min="0" max="20" value="15" step="0.5" oninput="syncSlider('lead-cost')">
+            <div class="input-wrapper">
+                <label for="lead-cost">Lead Cost (%): <span id="lead-cost-value">15</span></label>
+                <input type="number" id="lead-cost-input" min="0" max="20" value="15" step="1" oninput="syncSlider('lead-cost')">
+            </div>
+            <input type="range" id="lead-cost" min="0" max="20" value="15" step="1" oninput="syncInput('lead-cost')">
         </div>
 
         <div class="output">
@@ -154,31 +157,36 @@
         function calculate() {
             const price = parseFloat(document.getElementById('price').value);
             const cost = parseFloat(document.getElementById('cost').value);
-            const dealerFee = parseFloat(document.getElementById('dealer-fee').value).toFixed(2) / 100;
+            const dealerFee = parseFloat(document.getElementById('dealer-fee').value) / 100;
             const repPercentage = parseFloat(document.getElementById('rep-percentage').value) / 100;
             const leadCost = parseFloat(document.getElementById('lead-cost').value) / 100;
 
             document.getElementById('price-value').textContent = price;
             document.getElementById('cost-value').textContent = cost;
-            document.getElementById('dealer-fee-value').textContent = dealerFee * 100;
-            document.getElementById('rep-percentage-value').textContent = repPercentage * 100;
-            document.getElementById('lead-cost-value').textContent = leadCost * 100;
+            document.getElementById('dealer-fee-value').textContent = (dealerFee * 100).toFixed(2);
+            document.getElementById('rep-percentage-value').textContent = (repPercentage * 100).toFixed(0);
+            document.getElementById('lead-cost-value').textContent = (leadCost * 100).toFixed(0);
 
-            // New calculation formula
             const result = (((((price * (1 - dealerFee)) * (1 - leadCost))) - cost) * repPercentage) / 2;
-
             document.getElementById('result').textContent = result.toFixed(2);
         }
 
         function syncInput(id) {
-            document.getElementById(`${id}-input`).value = document.getElementById(id).value;
+            const rangeInput = document.getElementById(id);
+            const numberInput = document.getElementById(`${id}-input`);
+            numberInput.value = rangeInput.value;
             calculate();
         }
 
         function syncSlider(id) {
-            document.getElementById(id).value = document.getElementById(`${id}-input`).value;
+            const numberInput = document.getElementById(`${id}-input`);
+            const rangeInput = document.getElementById(id);
+            rangeInput.value = numberInput.value;
             calculate();
         }
+
+        // Initial calculation on page load
+        document.addEventListener('DOMContentLoaded', calculate);
     </script>
 </body>
 </html>
