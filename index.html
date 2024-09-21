@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator__fixed</title>
+    <title>Job Price Calculator</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -102,6 +102,22 @@
             width: 100%;
             overflow-wrap: break-word;
         }
+
+        .slider-container input[type="number"] {
+            width: 100px;
+            padding: 8px;
+            margin-left: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #1E1E1E;
+            color: #E0E0E0;
+            font-size: 16px; /* Set minimum font size */
+        }
+
+        .slider-container input[type="range"] {
+            touch-action: manipulation; /* Prevents zoom on touch */
+        }
+
     </style>
 </head>
 <body>
