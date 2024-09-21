@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator_touch_2</title>
+    <title>Job Price Calculator_touch3</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -59,7 +59,6 @@
             background: linear-gradient(90deg, #BB86FC, #6200EE);
             outline: none;
             opacity: 0.8;
-            transition: opacity 0.2s ease-in-out;
             margin-top: 10px; /* Space above the slider */
         }
 
@@ -76,7 +75,7 @@
             border: 2px solid #BB86FC;
             cursor: pointer;
             border-radius: 50%;
-            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+            transition: background-color 0.2s ease-in-out;
         }
 
         .slider-container input[type="number"] {
@@ -103,21 +102,6 @@
             width: 100%;
             overflow-wrap: break-word;
         }
-
-        .slider-container input[type="number"] {
-            width: 100px;
-            padding: 8px;
-            margin-left: 10px;
-            border: 1px solid #333;
-            border-radius: 5px;
-            background-color: #1E1E1E;
-            color: #E0E0E0;
-            font-size: 16px; /* Set minimum font size */
-        }
-
-        .slider-container input[type="range"] {
-            touch-action: manipulation; /* Prevents zoom on touch */
-        }
     </style>
 </head>
 <body>
@@ -129,7 +113,7 @@
                 <label for="price">Price ($): <span id="price-value">5000</span></label>
                 <input type="number" id="price-input" min="5000" max="170000" value="5000" step="100" oninput="syncSlider('price')">
             </div>
-            <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')" ontouchmove="adjustSlider('price', event)">
+            <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')">
         </div>
 
         <div class="slider-container">
@@ -137,31 +121,7 @@
                 <label for="cost">Cost ($): <span id="cost-value">0</span></label>
                 <input type="number" id="cost-input" min="0" max="100000" value="0" step="100" oninput="syncSlider('cost')">
             </div>
-            <input type="range" id="cost" min="0" max="100000" value="0" step="100" oninput="syncInput('cost')" ontouchmove="adjustSlider('cost', event)">
-        </div>
-
-        <div class="slider-container">
-            <div class="input-wrapper">
-                <label for="dealer-fee">Dealer Fee (%): <span id="dealer-fee-value">0</span></label>
-                <input type="number" id="dealer-fee-input" min="0" max="15" value="0" step="0.25" oninput="syncSlider('dealer-fee')">
-            </div>
-            <input type="range" id="dealer-fee" min="0" max="15" value="0" step="0.25" oninput="syncInput('dealer-fee')" ontouchmove="adjustSlider('dealer-fee', event)">
-        </div>
-
-        <div class="slider-container">
-            <div class="input-wrapper">
-                <label for="rep-percentage">Rep Percentage (%): <span id="rep-percentage-value">100</span></label>
-                <input type="number" id="rep-percentage-input" min="0" max="100" value="100" oninput="syncSlider('rep-percentage')">
-            </div>
-            <input type="range" id="rep-percentage" min="0" max="100" value="100" oninput="syncInput('rep-percentage')" ontouchmove="adjustSlider('rep-percentage', event)">
-        </div>
-
-        <div class="slider-container">
-            <div class="input-wrapper">
-                <label for="lead-cost">Lead Cost (%): <span id="lead-cost-value">15</span></label>
-                <input type="number" id="lead-cost-input" min="0" max="20" value="15" step="1" oninput="syncSlider('lead-cost')">
-            </div>
-            <input type="range" id="lead-cost" min="0" max="20" value="15" step="1" oninput="syncInput('lead-cost')" ontouchmove="adjustSlider('lead-cost', event)">
+            <input type="range" id="cost" min="0" max="100000" value="0" step="100" oninput="syncInput('cost')">
         </div>
 
         <div class="output">
@@ -173,18 +133,10 @@
         function calculate() {
             const price = parseFloat(document.getElementById('price').value);
             const cost = parseFloat(document.getElementById('cost').value);
-            const dealerFee = parseFloat(document.getElementById('dealer-fee').value) / 100;
-            const repPercentage = parseFloat(document.getElementById('rep-percentage').value) / 100;
-            const leadCost = parseFloat(document.getElementById('lead-cost').value) / 100;
-
+            const result = (price - cost) / 2; // Simple calculation
+            document.getElementById('result').textContent = result.toFixed(2);
             document.getElementById('price-value').textContent = price;
             document.getElementById('cost-value').textContent = cost;
-            document.getElementById('dealer-fee-value').textContent = (dealerFee * 100).toFixed(2);
-            document.getElementById('rep-percentage-value').textContent = (repPercentage * 100).toFixed(0);
-            document.getElementById('lead-cost-value').textContent = (leadCost * 100).toFixed(0);
-
-            const result = (((((price * (1 - dealerFee)) * (1 - leadCost))) - cost) * repPercentage) / 2;
-            document.getElementById('result').textContent = result.toFixed(2);
         }
 
         function syncInput(id) {
@@ -199,26 +151,6 @@
             const rangeInput = document.getElementById(id);
             rangeInput.value = numberInput.value;
             calculate();
-        }
-
-        function adjustSlider(id, event) {
-            const rangeInput = document.getElementById(id);
-            const touch = event.touches[0];
-            const sliderRect = rangeInput.getBoundingClientRect();
-            const percentage = (touch.clientX - sliderRect.left) / sliderRect.width;
-
-            // Calculate new value based on percentage with a slower adjustment factor
-            const newValue = Math.round(percentage * (rangeInput.max - rangeInput.min) + parseFloat(rangeInput.min));
-            const currentValue = parseFloat(rangeInput.value);
-            const distance = Math.abs(newValue - currentValue);
-            const adjustmentFactor = Math.max(1, Math.ceil(distance / 10)); // Slow down the adjustment based on distance
-
-            if (distance > 1) {
-                rangeInput.value = currentValue + (newValue > currentValue ? 1 / adjustmentFactor : -1 / adjustmentFactor);
-                syncInput(id);
-            }
-
-            event.preventDefault(); // Prevent scrolling
         }
 
         // Initial calculation on page load
