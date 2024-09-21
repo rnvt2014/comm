@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator_keypad</title>
+    <title>Job Price Calculator_replace</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -190,6 +190,14 @@
             rangeInput.value = numberInput.value;
             calculate();
         }
+
+        // Replace current input value when a new number is pressed
+        document.querySelectorAll('input[type="tel"]').forEach(input => {
+            input.addEventListener('input', function(event) {
+                this.value = event.target.value; // Replace with new input
+                calculate();
+            });
+        });
 
         // Initial calculation on page load
         document.addEventListener('DOMContentLoaded', calculate);
