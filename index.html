@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator_touch_sens</title>
+    <title>Job Price Calculator_touch_2</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -207,10 +207,18 @@
             const sliderRect = rangeInput.getBoundingClientRect();
             const percentage = (touch.clientX - sliderRect.left) / sliderRect.width;
 
-            // Calculate new value based on percentage
+            // Calculate new value based on percentage with a slower adjustment factor
             const newValue = Math.round(percentage * (rangeInput.max - rangeInput.min) + parseFloat(rangeInput.min));
-            rangeInput.value = newValue;
-            syncInput(id);
+            const currentValue = parseFloat(rangeInput.value);
+            const distance = Math.abs(newValue - currentValue);
+            const adjustmentFactor = Math.max(1, Math.ceil(distance / 10)); // Slow down the adjustment based on distance
+
+            if (distance > 1) {
+                rangeInput.value = currentValue + (newValue > currentValue ? 1 / adjustmentFactor : -1 / adjustmentFactor);
+                syncInput(id);
+            }
+
+            event.preventDefault(); // Prevent scrolling
         }
 
         // Initial calculation on page load
