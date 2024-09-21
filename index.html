@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator__3</title>
+    <title>Job Price Calculator__.tofix(2)</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -129,8 +129,8 @@
 
         <div class="slider-container">
             <label for="dealer-fee">Dealer Fee (%): <span id="dealer-fee-value">0</span></label>
-            <input type="range" id="dealer-fee" min="0" max="15" value="0" step="0.5" oninput="syncInput('dealer-fee')" onchange="calculate()">
-            <input type="number" id="dealer-fee-input" min="0" max="15" value="0" step="0.5" oninput="syncSlider('dealer-fee')">
+            <input type="range" id="dealer-fee" min="0" max="15" value="0" step="0.25" oninput="syncInput('dealer-fee')" onchange="calculate()">
+            <input type="number" id="dealer-fee-input" min="0" max="15" value="0" step="0.25" oninput="syncSlider('dealer-fee')">
         </div>
 
         <div class="slider-container">
@@ -154,7 +154,7 @@
         function calculate() {
             const price = parseFloat(document.getElementById('price').value);
             const cost = parseFloat(document.getElementById('cost').value);
-            const dealerFee = parseFloat(document.getElementById('dealer-fee').value) / 100;
+            const dealerFee = parseFloat(document.getElementById('dealer-fee').value).toFixed(2) / 100;
             const repPercentage = parseFloat(document.getElementById('rep-percentage').value) / 100;
             const leadCost = parseFloat(document.getElementById('lead-cost').value) / 100;
 
