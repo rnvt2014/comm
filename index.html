@@ -104,7 +104,7 @@
         <div class="slider-container">
             <label for="price">Price ($): </label>
             <div class="slider-wrapper">
-                <input type="number" id="price-input" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')">
+                <input type="number" id="price-input" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')" onchange="calculate()">
                 <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')">
             </div>
         </div>
@@ -112,7 +112,7 @@
         <div class="slider-container">
             <label for="cost">Cost ($): </label>
             <div class="slider-wrapper">
-                <input type="number" id="cost-input" min="0" max="100000" value="0" step="100" oninput="syncInput('cost')">
+                <input type="number" id="cost-input" min="0" max="100000" value="0" step="100" oninput="syncInput('cost')" onchange="calculate()">
                 <input type="range" id="cost" min="0" max="100000" value="0" step="100" oninput="syncInput('cost')">
             </div>
         </div>
@@ -120,7 +120,7 @@
         <div class="slider-container">
             <label for="dealer-fee">Dealer Fee (%): </label>
             <div class="slider-wrapper">
-                <input type="number" id="dealer-fee-input" min="0" max="15" value="0" step="0.25" oninput="syncInput('dealer-fee')">
+                <input type="number" id="dealer-fee-input" min="0" max="15" value="0" step="0.25" oninput="syncInput('dealer-fee')" onchange="calculate()">
                 <input type="range" id="dealer-fee" min="0" max="15" value="0" step="0.25" oninput="syncInput('dealer-fee')">
             </div>
         </div>
@@ -128,7 +128,7 @@
         <div class="slider-container">
             <label for="rep-percentage">Rep Percentage (%): </label>
             <div class="slider-wrapper">
-                <input type="number" id="rep-percentage-input" min="0" max="100" value="100" oninput="syncInput('rep-percentage')">
+                <input type="number" id="rep-percentage-input" min="0" max="100" value="100" oninput="syncInput('rep-percentage')" onchange="calculate()">
                 <input type="range" id="rep-percentage" min="0" max="100" value="100" oninput="syncInput('rep-percentage')">
             </div>
         </div>
@@ -136,7 +136,7 @@
         <div class="slider-container">
             <label for="lead-cost">Lead Cost (%): </label>
             <div class="slider-wrapper">
-                <input type="number" id="lead-cost-input" min="0" max="20" value="15" step="0.5" oninput="syncInput('lead-cost')">
+                <input type="number" id="lead-cost-input" min="0" max="20" value="15" step="0.5" oninput="syncInput('lead-cost')" onchange="calculate()">
                 <input type="range" id="lead-cost" min="0" max="20" value="15" step="0.5" oninput="syncInput('lead-cost')">
             </div>
         </div>
