@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator_no-scroll</title>
+    <title>Job Price Calculator_touch_sens</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -129,7 +129,7 @@
                 <label for="price">Price ($): <span id="price-value">5000</span></label>
                 <input type="number" id="price-input" min="5000" max="170000" value="5000" step="100" oninput="syncSlider('price')">
             </div>
-            <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')">
+            <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')" ontouchmove="adjustSlider('price', event)">
         </div>
 
         <div class="slider-container">
@@ -137,7 +137,7 @@
                 <label for="cost">Cost ($): <span id="cost-value">0</span></label>
                 <input type="number" id="cost-input" min="0" max="100000" value="0" step="100" oninput="syncSlider('cost')">
             </div>
-            <input type="range" id="cost" min="0" max="100000" value="0" step="100" oninput="syncInput('cost')">
+            <input type="range" id="cost" min="0" max="100000" value="0" step="100" oninput="syncInput('cost')" ontouchmove="adjustSlider('cost', event)">
         </div>
 
         <div class="slider-container">
@@ -145,7 +145,7 @@
                 <label for="dealer-fee">Dealer Fee (%): <span id="dealer-fee-value">0</span></label>
                 <input type="number" id="dealer-fee-input" min="0" max="15" value="0" step="0.25" oninput="syncSlider('dealer-fee')">
             </div>
-            <input type="range" id="dealer-fee" min="0" max="15" value="0" step="0.25" oninput="syncInput('dealer-fee')">
+            <input type="range" id="dealer-fee" min="0" max="15" value="0" step="0.25" oninput="syncInput('dealer-fee')" ontouchmove="adjustSlider('dealer-fee', event)">
         </div>
 
         <div class="slider-container">
@@ -153,7 +153,7 @@
                 <label for="rep-percentage">Rep Percentage (%): <span id="rep-percentage-value">100</span></label>
                 <input type="number" id="rep-percentage-input" min="0" max="100" value="100" oninput="syncSlider('rep-percentage')">
             </div>
-            <input type="range" id="rep-percentage" min="0" max="100" value="100" oninput="syncInput('rep-percentage')">
+            <input type="range" id="rep-percentage" min="0" max="100" value="100" oninput="syncInput('rep-percentage')" ontouchmove="adjustSlider('rep-percentage', event)">
         </div>
 
         <div class="slider-container">
@@ -161,7 +161,7 @@
                 <label for="lead-cost">Lead Cost (%): <span id="lead-cost-value">15</span></label>
                 <input type="number" id="lead-cost-input" min="0" max="20" value="15" step="1" oninput="syncSlider('lead-cost')">
             </div>
-            <input type="range" id="lead-cost" min="0" max="20" value="15" step="1" oninput="syncInput('lead-cost')">
+            <input type="range" id="lead-cost" min="0" max="20" value="15" step="1" oninput="syncInput('lead-cost')" ontouchmove="adjustSlider('lead-cost', event)">
         </div>
 
         <div class="output">
@@ -199,6 +199,18 @@
             const rangeInput = document.getElementById(id);
             rangeInput.value = numberInput.value;
             calculate();
+        }
+
+        function adjustSlider(id, event) {
+            const rangeInput = document.getElementById(id);
+            const touch = event.touches[0];
+            const sliderRect = rangeInput.getBoundingClientRect();
+            const percentage = (touch.clientX - sliderRect.left) / sliderRect.width;
+
+            // Calculate new value based on percentage
+            const newValue = Math.round(percentage * (rangeInput.max - rangeInput.min) + parseFloat(rangeInput.min));
+            rangeInput.value = newValue;
+            syncInput(id);
         }
 
         // Initial calculation on page load
