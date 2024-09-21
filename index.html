@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator_replace</title>
+    <title>Job Price Calculator_replace2</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -79,7 +79,7 @@
             transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
         }
 
-        .slider-container input[type="tel"] {
+        .slider-container input[type="number"] {
             width: 100px;
             padding: 8px;
             margin-left: 10px;
@@ -90,7 +90,7 @@
             font-size: 16px; /* Set minimum font size */
         }
 
-        .slider-container input[type="tel"]:focus {
+        .slider-container input[type="number"]:focus {
             border-color: #6200EE;
             outline: none;
         }
@@ -117,7 +117,7 @@
         <div class="slider-container">
             <div class="input-wrapper">
                 <label for="price">Price ($): <span id="price-value">5000</span></label>
-                <input type="tel" id="price-input" min="5000" max="170000" value="5000" step="100" oninput="syncSlider('price')">
+                <input type="number" id="price-input" min="5000" max="170000" value="5000" step="100" oninput="syncSlider('price')">
             </div>
             <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')">
         </div>
@@ -125,7 +125,7 @@
         <div class="slider-container">
             <div class="input-wrapper">
                 <label for="cost">Cost ($): <span id="cost-value">0</span></label>
-                <input type="tel" id="cost-input" min="0" max="100000" value="0" step="100" oninput="syncSlider('cost')">
+                <input type="number" id="cost-input" min="0" max="100000" value="0" step="100" oninput="syncSlider('cost')">
             </div>
             <input type="range" id="cost" min="0" max="100000" value="0" step="100" oninput="syncInput('cost')">
         </div>
@@ -133,7 +133,7 @@
         <div class="slider-container">
             <div class="input-wrapper">
                 <label for="dealer-fee">Dealer Fee (%): <span id="dealer-fee-value">0</span></label>
-                <input type="tel" id="dealer-fee-input" min="0" max="15" value="0" step="0.25" oninput="syncSlider('dealer-fee')">
+                <input type="number" id="dealer-fee-input" min="0" max="15" value="0" step="0.25" oninput="syncSlider('dealer-fee')">
             </div>
             <input type="range" id="dealer-fee" min="0" max="15" value="0" step="0.25" oninput="syncInput('dealer-fee')">
         </div>
@@ -141,7 +141,7 @@
         <div class="slider-container">
             <div class="input-wrapper">
                 <label for="rep-percentage">Rep Percentage (%): <span id="rep-percentage-value">100</span></label>
-                <input type="tel" id="rep-percentage-input" min="0" max="100" value="100" oninput="syncSlider('rep-percentage')">
+                <input type="number" id="rep-percentage-input" min="0" max="100" value="100" oninput="syncSlider('rep-percentage')">
             </div>
             <input type="range" id="rep-percentage" min="0" max="100" value="100" oninput="syncInput('rep-percentage')">
         </div>
@@ -149,7 +149,7 @@
         <div class="slider-container">
             <div class="input-wrapper">
                 <label for="lead-cost">Lead Cost (%): <span id="lead-cost-value">15</span></label>
-                <input type="tel" id="lead-cost-input" min="0" max="20" value="15" step="1" oninput="syncSlider('lead-cost')">
+                <input type="number" id="lead-cost-input" min="0" max="20" value="15" step="1" oninput="syncSlider('lead-cost')">
             </div>
             <input type="range" id="lead-cost" min="0" max="20" value="15" step="1" oninput="syncInput('lead-cost')">
         </div>
@@ -191,11 +191,15 @@
             calculate();
         }
 
-        // Replace current input value when a new number is pressed
-        document.querySelectorAll('input[type="tel"]').forEach(input => {
-            input.addEventListener('input', function(event) {
-                this.value = event.target.value; // Replace with new input
-                calculate();
+        // Handle input for mobile devices
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.setAttribute('type', 'tel'); // Change to tel on focus
+            });
+
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9.]/g, ''); // Allow only numbers
+                syncSlider(this.id.replace('-input', ''));
             });
         });
 
