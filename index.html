@@ -50,34 +50,6 @@
             align-items: center;
         }
 
-        .slider-container input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            border-radius: 5px;
-            background: linear-gradient(90deg, #BB86FC, #6200EE);
-            outline: none;
-            opacity: 0.8;
-            transition: opacity 0.2s ease-in-out;
-            margin-top: 10px; /* Space above the slider */
-        }
-
-        .slider-container input[type="range"]:hover {
-            opacity: 1;
-        }
-
-        .slider-container input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #03DAC6;
-            border: 2px solid #BB86FC;
-            cursor: pointer;
-            border-radius: 50%;
-            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-        }
-
         .slider-container input[type="tel"] {
             width: 100px;
             padding: 8px;
@@ -105,39 +77,47 @@
         }
 
         .spinner {
+            position: relative;
             margin: 20px auto;
             width: 100px;
             height: 100px;
             border: 10px solid transparent;
             border-top-color: #BB86FC;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
             cursor: pointer;
         }
 
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
+        .spinner-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 70%;
+            background-color: #1E1E1E;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            color: #03DAC6;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Job Price Calculator__Spinner2</h1>
+        <h1>Job Price Calculator_topSpinner</h1>
 
         <div class="slider-container">
             <div class="input-wrapper">
                 <label for="price">Price ($): <span id="price-value">5000</span></label>
                 <input type="tel" id="price-input" min="5000" max="170000" value="5000" step="100" oninput="syncSlider('price')">
             </div>
-            <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')" ontouchstart="startTouch(event, 'price')" ontouchmove="moveTouch(event)" ontouchend="endTouch()">
         </div>
 
-        <div class="spinner" onmousedown="startSpinner(event)" onmouseup="stopSpinner()" onmouseleave="stopSpinner()"></div>
+        <div class="spinner" onmousedown="startSpinner(event)" onmouseup="stopSpinner()" onmouseleave="stopSpinner()">
+            <div class="spinner-inner" id="spinner-value">5000</div>
+        </div>
 
         <div class="slider-container">
             <div class="input-wrapper">
@@ -177,11 +157,8 @@
     </div>
 
     <script>
-        let startY;
-        let startX;
-        let currentSlider;
-        let baseRatio = 1; // Start with a 1/1 ratio
-        let minRatio = 0.1; // Minimum ratio (1/10)
+        let startAngle;
+        let currentValue = 5000;
         let spinnerInterval;
 
         function calculate() {
@@ -216,39 +193,30 @@
         }
 
         function adjustPrice(amount) {
-            const priceInput = document.getElementById('price-input');
-            let newValue = parseInt(priceInput.value) + amount;
-            // Ensure the value stays within bounds
-            if (newValue >= parseInt(priceInput.min) && newValue <= parseInt(priceInput.max)) {
-                priceInput.value = newValue;
-                syncSlider('price');
-            }
+            currentValue += amount;
+            currentValue = Math.max(5000, Math.min(currentValue, 170000)); // Clamp between min and max
+            document.getElementById('price-input').value = currentValue;
+            document.getElementById('spinner-value').textContent = currentValue;
+            syncSlider('price');
         }
 
         function startSpinner(event) {
-            event.preventDefault();
-            const initialY = event.clientY;
-            const initialX = event.clientX;
+            startAngle = Math.atan2(event.clientY - 150, event.clientX - 150);
+            document.addEventListener('mousemove', rotateSpinner);
+        }
 
-            spinnerInterval = setInterval(() => {
-                const currentY = event.clientY;
-                const deltaY = initialY - currentY;
+        function rotateSpinner(event) {
+            const angle = Math.atan2(event.clientY - 150, event.clientX - 150);
+            const deltaAngle = angle - startAngle;
 
-                // Calculate adjustment based on the rotation
-                if (Math.abs(deltaY) > 50) {
-                    if (deltaY > 0) {
-                        adjustPrice(100);
-                    } else {
-                        adjustPrice(-100);
-                    }
-                    // Reset initialY for smoother increments
-                    initialY = currentY;
-                }
-            }, 100);
+            if (Math.abs(deltaAngle) > 0.1) {
+                adjustPrice(deltaAngle > 0 ? 100 : -100); // Adjust price by 100 for each quarter turn
+                startAngle = angle; // Update start angle for smooth movement
+            }
         }
 
         function stopSpinner() {
-            clearInterval(spinnerInterval);
+            document.removeEventListener('mousemove', rotateSpinner);
         }
 
         // Initial calculation on page load
