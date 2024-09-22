@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator_tocuh_ratio</title>
+    <title>Job Price Calculator_keypad</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -111,7 +111,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Job Price Calculator_TEST_Ratio</h1>
+        <h1>Job Price Calculator__Ratio_x/y</h1>
 
         <div class="slider-container">
             <div class="input-wrapper">
@@ -162,7 +162,8 @@
         let startY;
         let startX;
         let currentSlider;
-        let ratio = 1;
+        let baseRatio = 1; // Start with a 1/1 ratio
+        let minRatio = 0.1; // Minimum ratio (1/10)
 
         function calculate() {
             const price = parseFloat(document.getElementById('price').value);
@@ -207,8 +208,12 @@
             const currentY = event.touches[0].clientY;
             const currentX = event.touches[0].clientX;
 
-            // Calculate the ratio based on the y-axis position: lower y value gives a lower ratio.
-            ratio = Math.max(0.1, (window.innerHeight - currentY) / window.innerHeight);
+            // Calculate the ratio based on how far the finger is pushed down from the starting point
+            const distanceY = currentY - startY;
+
+            // Determine the ratio based on the vertical movement
+            let ratio = baseRatio - (distanceY / window.innerHeight);
+            ratio = Math.max(minRatio, Math.min(baseRatio, ratio)); // Ensure ratio is within min/max bounds
 
             // Calculate new value based on horizontal movement and ratio
             const deltaX = (currentX - startX) * ratio;
