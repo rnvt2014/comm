@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator - Improved UX</title>
+    <title>Job Price Calculator_touch slider</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -60,7 +60,6 @@
             opacity: 0.8;
             transition: opacity 0.2s ease-in-out;
             margin-top: 10px;
-            touch-action: manipulation;
         }
 
         .slider-container input[type="range"]:hover {
@@ -104,18 +103,22 @@
             width: 100%;
             overflow-wrap: break-word;
         }
+
+        .slider-container input[type="range"] {
+            touch-action: manipulation;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Job Price Calculator</h1>
+        <h1>Job Price Calculator-TEST</h1>
 
         <div class="slider-container">
             <div class="input-wrapper">
                 <label for="price">Price ($): <span id="price-value">5000</span></label>
                 <input type="tel" id="price-input" min="5000" max="170000" value="5000" step="100" oninput="syncSlider('price')">
             </div>
-            <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')">
+            <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')" ontouchstart="startTouch(event)" ontouchmove="moveTouch(event)">
         </div>
 
         <div class="slider-container">
@@ -187,36 +190,28 @@
             calculate();
         }
 
-        // Adjust step dynamically based on touch input
-        function adjustSliderStep(event) {
-            const slider = event.target;
-            const touch = event.touches[0];
-            const startY = touch.clientY;
+        // Track touch start position
+        let startY = 0;
 
-            function onMove(e) {
-                const deltaY = e.touches[0].clientY - startY;
-                let step = Math.abs(deltaY) < 10 ? 1 : Math.abs(deltaY) < 20 ? 10 : 100;
-                
-                if (slider.id === 'dealer-fee' || slider.id === 'rep-percentage' || slider.id === 'lead-cost') {
-                    step = Math.abs(deltaY) < 10 ? 0.1 : Math.abs(deltaY) < 20 ? 0.25 : 1;
-                }
-
-                slider.step = step;
-            }
-
-            function onEnd() {
-                window.removeEventListener('touchmove', onMove);
-                window.removeEventListener('touchend', onEnd);
-            }
-
-            window.addEventListener('touchmove', onMove);
-            window.addEventListener('touchend', onEnd);
+        function startTouch(event) {
+            startY = event.touches[0].clientY;
         }
 
-        document.querySelectorAll('input[type="range"]').forEach(slider => {
-            slider.addEventListener('touchstart', adjustSliderStep);
-        });
+        function moveTouch(event) {
+            const slider = event.target;
+            const currentY = event.touches[0].clientY;
+            const deltaY = startY - currentY;
 
+            // Modify step size based on the vertical movement
+            const baseStep = parseFloat(slider.getAttribute('data-base-step')) || 100;
+            const newStep = Math.max(1, baseStep + deltaY / 5);
+            slider.step = newStep;
+
+            // Update startY for continuous adjustment
+            startY = currentY;
+        }
+
+        // Initial calculation on page load
         document.addEventListener('DOMContentLoaded', calculate);
     </script>
 </body>
