@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator_tocuh ratio</title>
+    <title>Job Price Calculator_tocuh_ratio</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -13,7 +13,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* min-height: 100vh; */
             overflow: hidden; /* Prevent scrolling */
         }
 
@@ -112,14 +111,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>Job Price Calculator Touch Ratio TEST</h1>
+        <h1>Job Price Calculator_TEST_Ratio</h1>
 
         <div class="slider-container">
             <div class="input-wrapper">
                 <label for="price">Price ($): <span id="price-value">5000</span></label>
                 <input type="tel" id="price-input" min="5000" max="170000" value="5000" step="100" oninput="syncSlider('price')">
             </div>
-            <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')" ontouchstart="startTouch(event, 'price')" ontouchmove="moveTouch(event, 'price')" ontouchend="endTouch()">
+            <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')" ontouchstart="startTouch(event, 'price')" ontouchmove="moveTouch(event)" ontouchend="endTouch()">
         </div>
 
         <div class="slider-container">
@@ -208,8 +207,8 @@
             const currentY = event.touches[0].clientY;
             const currentX = event.touches[0].clientX;
 
-            // Calculate the ratio based on the vertical movement
-            ratio = Math.max(0.1, (startY / currentY) * 0.5); // This ratio calculation can be adjusted
+            // Calculate the ratio based on the y-axis position: lower y value gives a lower ratio.
+            ratio = Math.max(0.1, (window.innerHeight - currentY) / window.innerHeight);
 
             // Calculate new value based on horizontal movement and ratio
             const deltaX = (currentX - startX) * ratio;
