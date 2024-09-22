@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator_Spinner</title>
+    <title>Job Price Calculator_keypad</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -105,32 +105,29 @@
         }
 
         .spinner {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .spinner button {
-            background-color: #BB86FC;
-            color: #E0E0E0;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 15px;
-            font-size: 1.2em;
+            margin: 20px auto;
+            width: 100px;
+            height: 100px;
+            border: 10px solid transparent;
+            border-top-color: #BB86FC;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
             cursor: pointer;
-            transition: background-color 0.2s;
-            margin: 0 10px;
         }
 
-        .spinner button:hover {
-            background-color: #6200EE;
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Job Price Calculator Spinner</h1>
+        <h1>Job Price Calculator__Spinner2</h1>
 
         <div class="slider-container">
             <div class="input-wrapper">
@@ -140,10 +137,7 @@
             <input type="range" id="price" min="5000" max="170000" value="5000" step="100" oninput="syncInput('price')" ontouchstart="startTouch(event, 'price')" ontouchmove="moveTouch(event)" ontouchend="endTouch()">
         </div>
 
-        <div class="spinner">
-            <button onclick="adjustPrice(-100)">-100</button>
-            <button onclick="adjustPrice(100)">+100</button>
-        </div>
+        <div class="spinner" onmousedown="startSpinner(event)" onmouseup="stopSpinner()" onmouseleave="stopSpinner()"></div>
 
         <div class="slider-container">
             <div class="input-wrapper">
@@ -188,6 +182,7 @@
         let currentSlider;
         let baseRatio = 1; // Start with a 1/1 ratio
         let minRatio = 0.1; // Minimum ratio (1/10)
+        let spinnerInterval;
 
         function calculate() {
             const price = parseFloat(document.getElementById('price').value);
@@ -230,39 +225,30 @@
             }
         }
 
-        function startTouch(event, id) {
-            startY = event.touches[0].clientY;
-            startX = event.touches[0].clientX;
-            currentSlider = document.getElementById(id);
+        function startSpinner(event) {
+            event.preventDefault();
+            const initialY = event.clientY;
+            const initialX = event.clientX;
+
+            spinnerInterval = setInterval(() => {
+                const currentY = event.clientY;
+                const deltaY = initialY - currentY;
+
+                // Calculate adjustment based on the rotation
+                if (Math.abs(deltaY) > 50) {
+                    if (deltaY > 0) {
+                        adjustPrice(100);
+                    } else {
+                        adjustPrice(-100);
+                    }
+                    // Reset initialY for smoother increments
+                    initialY = currentY;
+                }
+            }, 100);
         }
 
-        function moveTouch(event) {
-            if (!currentSlider) return;
-
-            const currentY = event.touches[0].clientY;
-            const currentX = event.touches[0].clientX;
-
-            // Calculate the ratio based on how far the finger is pushed down from the starting point
-            const distanceY = currentY - startY;
-
-            // Determine the ratio based on the vertical movement
-            let ratio = baseRatio - (distanceY / window.innerHeight);
-            ratio = Math.max(minRatio, Math.min(baseRatio, ratio)); // Ensure ratio is within min/max bounds
-
-            // Calculate new value based on horizontal movement and ratio
-            const deltaX = (currentX - startX) * ratio;
-            const newValue = parseInt(currentSlider.value) + deltaX;
-
-            // Ensure the value stays within bounds
-            if (newValue >= parseInt(currentSlider.min) && newValue <= parseInt(currentSlider.max)) {
-                currentSlider.value = newValue;
-                syncInput(currentSlider.id);
-                startX = currentX; // Update startX for smoother continuous movement
-            }
-        }
-
-        function endTouch() {
-            currentSlider = null;
+        function stopSpinner() {
+            clearInterval(spinnerInterval);
         }
 
         // Initial calculation on page load
