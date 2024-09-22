@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Price Calculator_keypad</title>
+    <title>Job Price Calculator - Improved UX</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -13,8 +13,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* min-height: 100vh; */
-            overflow: hidden; /* Prevent scrolling */
+            overflow: hidden;
         }
 
         .container {
@@ -43,7 +42,7 @@
             margin-bottom: 10px;
             font-size: 1.1em;
             color: #BB86FC;
-            width: 200px; /* Fixed width for the label */
+            width: 200px;
         }
 
         .slider-container .input-wrapper {
@@ -60,7 +59,8 @@
             outline: none;
             opacity: 0.8;
             transition: opacity 0.2s ease-in-out;
-            margin-top: 10px; /* Space above the slider */
+            margin-top: 10px;
+            touch-action: manipulation;
         }
 
         .slider-container input[type="range"]:hover {
@@ -87,7 +87,7 @@
             border-radius: 5px;
             background-color: #1E1E1E;
             color: #E0E0E0;
-            font-size: 16px; /* Set minimum font size */
+            font-size: 16px;
         }
 
         .slider-container input[type="tel"]:focus {
@@ -103,10 +103,6 @@
             text-align: center;
             width: 100%;
             overflow-wrap: break-word;
-        }
-
-        .slider-container input[type="range"] {
-            touch-action: manipulation; /* Prevents zoom on touch */
         }
     </style>
 </head>
@@ -191,7 +187,36 @@
             calculate();
         }
 
-        // Initial calculation on page load
+        // Adjust step dynamically based on touch input
+        function adjustSliderStep(event) {
+            const slider = event.target;
+            const touch = event.touches[0];
+            const startY = touch.clientY;
+
+            function onMove(e) {
+                const deltaY = e.touches[0].clientY - startY;
+                let step = Math.abs(deltaY) < 10 ? 1 : Math.abs(deltaY) < 20 ? 10 : 100;
+                
+                if (slider.id === 'dealer-fee' || slider.id === 'rep-percentage' || slider.id === 'lead-cost') {
+                    step = Math.abs(deltaY) < 10 ? 0.1 : Math.abs(deltaY) < 20 ? 0.25 : 1;
+                }
+
+                slider.step = step;
+            }
+
+            function onEnd() {
+                window.removeEventListener('touchmove', onMove);
+                window.removeEventListener('touchend', onEnd);
+            }
+
+            window.addEventListener('touchmove', onMove);
+            window.addEventListener('touchend', onEnd);
+        }
+
+        document.querySelectorAll('input[type="range"]').forEach(slider => {
+            slider.addEventListener('touchstart', adjustSliderStep);
+        });
+
         document.addEventListener('DOMContentLoaded', calculate);
     </script>
 </body>
